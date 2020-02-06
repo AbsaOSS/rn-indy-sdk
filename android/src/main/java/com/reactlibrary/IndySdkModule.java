@@ -62,7 +62,7 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "IndySdk";
+        return "IndyBridge";
     }
 
     // wallet
