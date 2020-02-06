@@ -42,7 +42,6 @@ import org.hyperledger.indy.sdk.pool.Pool;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -69,9 +68,9 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     // wallet
 
     @ReactMethod
-    public void createWallet(String config, String credentials, Promise promise) {
+    public void createWallet(String configJson, String credentialsJson, Promise promise) {
         try {
-            Wallet.createWallet(config, credentials).get();
+            Wallet.createWallet(configJson, credentialsJson).get();
             promise.resolve(null);
         } catch (Exception e) {
             IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
@@ -80,9 +79,9 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void openWallet(String config, String credentials, Promise promise) {
+    public void openWallet(String configJson, String credentialsJson, Promise promise) {
         try {
-            Wallet wallet = Wallet.openWallet(config, credentials).get();
+            Wallet wallet = Wallet.openWallet(configJson, credentialsJson).get();
             walletMap.put(wallet.getWalletHandle(), wallet);
             promise.resolve(wallet.getWalletHandle());
         } catch (Exception e) {
@@ -105,9 +104,9 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void deleteWallet(String config, String credentials, Promise promise) {
+    public void deleteWallet(String configJson, String credentialsJson, Promise promise) {
         try {
-            Wallet.deleteWallet(config, credentials).get();
+            Wallet.deleteWallet(configJson, credentialsJson).get();
             promise.resolve(null);
         } catch (Exception e) {
             IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
@@ -265,6 +264,39 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void cryptoSign(int walletHandle, String signerVk, ReadableArray messageRaw, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            byte[] buffer = readableArrayToBuffer(messageRaw);
+            byte[] signature = Crypto.cryptoSign(wallet, signerVk, buffer).get();
+            WritableArray result = new WritableNativeArray();
+            for (byte b : signature) {
+                result.pushInt(b);
+            }
+            promise.resolve(result);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void cryptoVerify(String signerVk, ReadableArray messageRaw, ReadableArray signatureRaw, Promise promise) {
+        try {
+            byte[] messageBuf = readableArrayToBuffer(messageRaw);
+            byte[] sigBuf = readableArrayToBuffer(signatureRaw);
+            boolean valid = Crypto.cryptoVerify(signerVk, messageBuf, sigBuf).get();
+
+            promise.resolve(valid);
+        } catch (Exception e) {
+            IndyBridgeRejectResponse rejectResponse = new IndyBridgeRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+
+    @ReactMethod
     public void packMessage(int walletHandle, ReadableArray message, ReadableArray receiverKeys, String senderVk, Promise promise) {
         try {
             Wallet wallet = walletMap.get(walletHandle);
@@ -289,7 +321,8 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         }
     }
 
-    public void unpakcMessage(int walletHandle, ReadableArray jwe, Promise promise) {
+    @ReactMethod
+    public void unpackMessage(int walletHandle, ReadableArray jwe, Promise promise) {
         try {
             Wallet wallet = walletMap.get(walletHandle);
             byte[] buffer = readableArrayToBuffer(jwe);
