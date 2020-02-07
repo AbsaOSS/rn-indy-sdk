@@ -333,11 +333,11 @@ export default {
     return [verkey, Buffer.from(msg)]
   },
 
-  cryptoSign(wh: WalletHandle, signerVk: string, message: Buffer) {
+  async cryptoSign(wh: WalletHandle, signerVk: string, message: Buffer): Promise<Buffer> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
-    return IndyBridge.cryptoSign(wh, signerVk, Array.from(message))
+    return Buffer.from(await IndyBridge.cryptoSign(wh, signerVk, Array.from(message)))
   },
 
   cryptoVerify(signerVk: string, message: Buffer, signature: Buffer) {
@@ -347,18 +347,18 @@ export default {
     return IndyBridge.cryptoVerify(signerVk, Array.from(message), Array.from(signature))
   },
 
-  packMessage(wh: WalletHandle, message: Buffer, receiverKeys: Verkey[], senderVk: string) {
+  async packMessage(wh: WalletHandle, message: Buffer, receiverKeys: Verkey[], senderVk: string): Promise<Buffer> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
-    return IndyBridge.packMessage(wh, Array.from(message), receiverKeys, senderVk)
+    return Buffer.from(await IndyBridge.packMessage(wh, Array.from(message), receiverKeys, senderVk))
   },
 
-  unpackMessage(wh: WalletHandle, jwe: Buffer) {
+  async unpackMessage(wh: WalletHandle, jwe: Buffer): Promise<Buffer> {
     if (Platform.OS == 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
-    return IndyBridge.unpackMessage(wh, Array.from(jwe))
+    return Buffer.from(await IndyBridge.unpackMessage(wh, Array.from(jwe)))
   },
 
   // pool
