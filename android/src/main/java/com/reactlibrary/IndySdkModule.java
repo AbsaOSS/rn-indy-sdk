@@ -122,6 +122,18 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     // did
 
     @ReactMethod
+    public void listMyDidsWithMeta(int walletHandle, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            String listDidsWithMetaJson = Did.getListMyDidsWithMeta(wallet).get();
+            promise.resolve(listDidsWithMetaJson);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+	
+    @ReactMethod
     public void createAndStoreMyDid(int walletHandle, String didJson, Promise promise) {
         try {
             Wallet wallet = walletMap.get(walletHandle);
