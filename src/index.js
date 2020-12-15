@@ -403,11 +403,28 @@ const indy = {
     return IndySdk.closePoolLedger(ph)
   },
 
+  // ledger
+
   async submitRequest(poolHandle: PoolHandle, request: LedgerRequest): Promise<LedgerRequestResult> {
     if (Platform.OS === 'ios') {
       return JSON.parse(await IndySdk.submitRequest(JSON.stringify(request), poolHandle))
     }
     return JSON.parse(await IndySdk.submitRequest(poolHandle, JSON.stringify(request)))
+  },
+
+  async signRequest(wh, submitterDid, request) {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`);
+    }
+    return JSON.parse((await IndySdk.signRequest(wh, submitterDid, JSON.stringify(request))));
+  },
+
+  async buildSchemaRequest(submitterDid: Did, data: string): Promise<LedgerRequest> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    return IndySdk.buildSchemaRequest(submitterDid, JSON.stringify(data));
   },
 
   async buildGetSchemaRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
@@ -572,6 +589,27 @@ const indy = {
     )
   },
 
+  async appendTxnAuthorAgreementAcceptanceToRequest(request: LedgerRequest, text: string, version: string, taaDigest: string, mechanism: string, time: number): Promise<string> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return JSON.parse(await IndySdk.appendTxnAuthorAgreementAcceptanceToRequest(request, text, version, taaDigest, mechanism, time))
+  },
+
+  async buildGetTxnAuthorAgreementRequest(submitterDid: Did, data: string): Promise<string> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return JSON.parse(await IndySdk.buildGetTxnAuthorAgreementRequest(submitterDid, data))
+  },
+
+  async buildGetAcceptanceMechanismsRequest(submitterDid: Did, timestamp: number, version: string): Promise<string> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    return JSON.parse(await IndySdk.buildGetAcceptanceMechanismsRequest(submitterDid, typeof timestamp == 'undefined' ? -1 : timestamp, typeof version == 'undefined' ? null : version))
+  },
+
   // non_secrets
 
   async addWalletRecord(wh: WalletHandle, type: string, id: string, value: string, tags: {}): Promise<void> {
@@ -613,6 +651,18 @@ const indy = {
   async closeWalletSearch(sh: WalletSearchHandle): Promise<void> {
     return IndySdk.closeWalletSearch(sh)
   },
+
+  // Anoncreds
+
+  async issuerCreateSchema(did: Did, name: string, version: string, attributes: string[]): Promise<[Schema, SchemaId]> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    const [schemaId, schema] = await IndySdk.issuerCreateSchema(did, name, version, JSON.stringify(attributes));
+    return [schemaId, JSON.parse(schema)];
+  },
+
 }
 
 const indyErrors = {

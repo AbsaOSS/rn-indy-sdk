@@ -32,6 +32,7 @@ import org.hyperledger.indy.sdk.IndyException;
 import org.hyperledger.indy.sdk.ErrorCode;
 import org.hyperledger.indy.sdk.anoncreds.Anoncreds;
 import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults;
+import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults.IssuerCreateSchemaResult;
 import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.crypto.CryptoResults;
 import org.hyperledger.indy.sdk.did.Did;
@@ -408,6 +409,29 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void signRequest(int walletHandle, String submitterDid, String requestJson, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            String request = Ledger.signRequest(wallet, submitterDid, requestJson).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void buildSchemaRequest(String submitterDid, String data, Promise promise) {
+        try {
+            String request = Ledger.buildSchemaRequest(submitterDid, data).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
     public void buildGetSchemaRequest(String submitterDid, String id, Promise promise) {
         try {
             String request = Ledger.buildGetSchemaRequest(submitterDid, id).get();
@@ -490,7 +514,54 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void appendTxnAuthorAgreementAcceptanceToRequest(String requestJson, String text, String version, String taaDigest, String mechanism, int time, Promise promise) {
+        try {
+            String request = Ledger.appendTxnAuthorAgreementAcceptanceToRequest(requestJson, text, version, taaDigest, mechanism, time).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void buildGetTxnAuthorAgreementRequest(String submitterDid, String data, Promise promise) {
+        try {
+            String request = Ledger.buildGetTxnAuthorAgreementRequest(submitterDid, data).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    @ReactMethod
+    public void buildGetAcceptanceMechanismsRequest(String submitterDid, int timestamp, String version, Promise promise) {
+        try {
+            String request = Ledger.buildGetAcceptanceMechanismsRequest(submitterDid, timestamp, version).get();
+            promise.resolve(request);
+        } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
     // anoncreds
+
+    @ReactMethod
+    public void issuerCreateSchema(String issuerDid, String name, String version, String attrs, Promise promise) {
+        try {
+            IssuerCreateSchemaResult schemaResult = Anoncreds.issuerCreateSchema(issuerDid, name, version, attrs).get();
+            WritableArray response = new WritableNativeArray();
+            response.pushString(schemaResult.getSchemaId());
+            response.pushString(schemaResult.getSchemaJson());
+            promise.resolve(response);
+        } catch(Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
 
     @ReactMethod
     public void proverCreateMasterSecret(int walletHandle, String masterSecretId, Promise promise) {
