@@ -477,6 +477,9 @@ const indy = {
   },
 
   async buildCredDefRequest(submitterDid: Did, credDef: CredDef): Promise<LedgerRequestResult> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
     return JSON.parse(await IndySdk.buildCredDefRequest(submitterDid, JSON.stringify(credDef)))
   },
 
