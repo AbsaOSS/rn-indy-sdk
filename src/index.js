@@ -412,7 +412,7 @@ const indy = {
     return JSON.parse(await IndySdk.submitRequest(poolHandle, JSON.stringify(request)))
   },
 
-  async signRequest(wh, submitterDid, request) {
+  async signRequest(wh: WalletHandle, submitterDid: Did, request: LedgerRequest) {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`);
     }
@@ -458,6 +458,10 @@ const indy = {
     }
     const [id, schema] = await IndySdk.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
     return [id, JSON.parse(schema)]
+  },
+
+  async buildCredDefRequest(submitterDid: Did, credDef: CredDef): Promise<LedgerRequestResult> {
+    return JSON.parse(await IndySdk.buildCredDefRequest(submitterDid, JSON.stringify(credDef)))
   },
 
   async buildGetCredDefRequest(submitterDid: Did, id: string): Promise<LedgerRequestResult> {
@@ -661,6 +665,15 @@ const indy = {
 
     const [schemaId, schema] = await IndySdk.issuerCreateSchema(did, name, version, JSON.stringify(attributes));
     return [schemaId, JSON.parse(schema)];
+  },
+
+  async issuerCreateAndStoreCredentialDef(wh: WalletHandle, issuerDid: Did, schema: Schema, tag: string, signatureType: string, config: {}): Promise<[CredDef, CredDefId]> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    const [credDefId, credDef] = await IndySdk.issuerCreateAndStoreCredentialDef(wh, issuerDid, JSON.stringify(schema), tag, signatureType, JSON.stringify(config));
+    return [credDefId, JSON.parse(credDef)];
   },
 
 }
