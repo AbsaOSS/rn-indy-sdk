@@ -207,6 +207,13 @@ export type CredReq = {
   nonce?: string,
 }
 
+export type CredValues = Record<string, CredValue>
+
+interface CredValue {
+  raw: string;
+  encoded: string; // Raw value as number in string
+}
+
 /**
  * Credential request metadata json for further processing of received form Issuer credential.
  */
@@ -217,12 +224,21 @@ export type CredReqMetadata = {}
  */
 export type RevRegDef = {}
 
+export type RevRegId = string;
+export type CredRevocId = string;
+export type RevocRegDelta = Record<string, unknown>;
+export type TailsWriterConfig = {
+  base_dir: string;
+  uri_pattern: string
+}
+
 export type Did = string
 
 export type Verkey = string
 
 export type WalletHandle = number
 export type PoolHandle = number
+export type BlobReaderHandle = number
 
 export type WalletRecord = {
   id: string,
@@ -416,7 +432,7 @@ const indy = {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`);
     }
-    return JSON.parse((await IndySdk.signRequest(wh, submitterDid, JSON.stringify(request))));
+    return JSON.parse(await IndySdk.signRequest(wh, submitterDid, JSON.stringify(request)));
   },
 
   async buildSchemaRequest(submitterDid: Did, data: string): Promise<LedgerRequest> {
@@ -424,7 +440,7 @@ const indy = {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
 
-    return IndySdk.buildSchemaRequest(submitterDid, JSON.stringify(data));
+    return JSON.parse(await IndySdk.buildSchemaRequest(submitterDid, JSON.stringify(data)));
   },
 
   async buildGetSchemaRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
@@ -676,6 +692,32 @@ const indy = {
     return [credDefId, JSON.parse(credDef)];
   },
 
+  async issuerCreateCredentialOffer(wh: WalletHandle, credDefId: CredDefId): Promise<string> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    return JSON.parse(await IndySdk.issuerCreateCredentialOffer(wh, credDefId));
+  },
+
+  async issuerCreateCredential(wh: WalletHandle, credOffer: CredOffer, credReq: CredReq, credValues: CredValues, revRegId: string, blobReaderHandle: number): Promise<[Cred, CredRevocId, RevocRegDelta]> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    const [cred, credRevocId, revocRegDelta] = await IndySdk.issuerCreateCredential(wh, JSON.stringify(credOffer), JSON.stringify(credReq), revRegId, JSON.stringify(credValues), blobReaderHandle);
+    return [JSON.parse(cred), credRevocId, JSON.parse(revocRegDelta)];
+  },
+
+  // blob_storage
+
+  async openBlobStorageReader(type: string, tailsWriterConfig: TailsWriterConfig): Promise<BlobReaderHandle> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+
+    return JSON.parse(await IndySdk.openBlobStorageReader(type, JSON.stringify(tailsWriterConfig)));
+  },
 }
 
 const indyErrors = {

@@ -33,7 +33,9 @@ import org.hyperledger.indy.sdk.ErrorCode;
 import org.hyperledger.indy.sdk.anoncreds.Anoncreds;
 import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults;
 import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults.IssuerCreateSchemaResult;
+import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults.IssuerCreateCredentialResult;
 import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults.IssuerCreateAndStoreCredentialDefResult;
+import org.hyperledger.indy.sdk.blob_storage.BlobStorageReader;
 import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.crypto.CryptoResults;
 import org.hyperledger.indy.sdk.did.Did;
@@ -589,6 +591,34 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
     }
+    
+    @ReactMethod
+    public void issuerCreateCredentialOffer(int walletHandle, String credDefId, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            String response = Anoncreds.issuerCreateCredentialOffer(wallet, credDefId).get();
+            promise.resolve(response);
+        } catch(Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+    
+    @ReactMethod
+    public void issuerCreateCredential(int walletHandle, String credOfferJson, String credReqJson, String credValuesJson, String revRegId, int blobStorageReaderHandle, Promise promise) {
+        try {
+            Wallet wallet = walletMap.get(walletHandle);
+            IssuerCreateCredentialResult createCredResult = Anoncreds.issuerCreateCredential(wallet, credOfferJson,credReqJson,credValuesJson,revRegId,blobStorageReaderHandle).get();
+            WritableArray response = new WritableNativeArray();
+            response.pushString(createCredResult.getCredentialJson());
+            response.pushString(createCredResult.getRevocId());
+            response.pushString(createCredResult.getRevocRegDeltaJson());
+            promise.resolve(response);
+        } catch(Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
 
     @ReactMethod
     public void proverCreateMasterSecret(int walletHandle, String masterSecretId, Promise promise) {
@@ -696,6 +726,19 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
             ).get();
             promise.resolve(proofJson);
         } catch (Exception e) {
+            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
+            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
+        }
+    }
+
+    // blob_storage
+    
+    @ReactMethod
+    public void openBlobStorageReader(String type, String tailsWriterConfig, Promise promise) {
+        try {
+            BlobStorageReader response = BlobStorageReader.openReader(type, tailsWriterConfig).get();
+            promise.resolve(response.getBlobStorageReaderHandle());
+        } catch(Exception e) {
             IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
             promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
         }
