@@ -428,7 +428,7 @@ const indy = {
     return JSON.parse(await IndySdk.submitRequest(poolHandle, JSON.stringify(request)))
   },
 
-  async signRequest(wh: WalletHandle, submitterDid: Did, request: LedgerRequest) {
+  async signRequest(wh: WalletHandle, submitterDid: Did, request: LedgerRequest): Promise<LedgerRequest> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`);
     }
@@ -612,21 +612,21 @@ const indy = {
     )
   },
 
-  async appendTxnAuthorAgreementAcceptanceToRequest(request: LedgerRequest, text: string, version: string, taaDigest: string, mechanism: string, time: number): Promise<string> {
+  async appendTxnAuthorAgreementAcceptanceToRequest(request: LedgerRequest, text: string, version: string, taaDigest: string, mechanism: string, time: number): Promise<LedgerRequest> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
-    return JSON.parse(await IndySdk.appendTxnAuthorAgreementAcceptanceToRequest(request, text, version, taaDigest, mechanism, time))
+    return JSON.parse(await IndySdk.appendTxnAuthorAgreementAcceptanceToRequest(JSON.stringify(request), text, version, taaDigest, mechanism, time))
   },
 
-  async buildGetTxnAuthorAgreementRequest(submitterDid: Did, data: string): Promise<string> {
+  async buildGetTxnAuthorAgreementRequest(submitterDid: Did, data: string): Promise<LedgerRequest> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
     return JSON.parse(await IndySdk.buildGetTxnAuthorAgreementRequest(submitterDid, data))
   },
 
-  async buildGetAcceptanceMechanismsRequest(submitterDid: Did, timestamp: number, version: string): Promise<string> {
+  async buildGetAcceptanceMechanismsRequest(submitterDid: Did, timestamp: number, version: string): Promise<LedgerRequest> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
@@ -695,7 +695,7 @@ const indy = {
     return [credDefId, JSON.parse(credDef)];
   },
 
-  async issuerCreateCredentialOffer(wh: WalletHandle, credDefId: CredDefId): Promise<string> {
+  async issuerCreateCredentialOffer(wh: WalletHandle, credDefId: CredDefId): Promise<CredOffer> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
