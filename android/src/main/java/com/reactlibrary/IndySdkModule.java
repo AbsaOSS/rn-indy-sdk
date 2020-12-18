@@ -33,7 +33,6 @@ import org.hyperledger.indy.sdk.ErrorCode;
 import org.hyperledger.indy.sdk.anoncreds.Anoncreds;
 import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults;
 import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults.IssuerCreateSchemaResult;
-import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults.IssuerCreateCredentialResult;
 import org.hyperledger.indy.sdk.anoncreds.AnoncredsResults.IssuerCreateAndStoreCredentialDefResult;
 import org.hyperledger.indy.sdk.blob_storage.BlobStorageReader;
 import org.hyperledger.indy.sdk.crypto.Crypto;
@@ -550,17 +549,6 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
-    public void buildGetAcceptanceMechanismsRequest(String submitterDid, int timestamp, String version, Promise promise) {
-        try {
-            String request = Ledger.buildGetAcceptanceMechanismsRequest(submitterDid, timestamp, version).get();
-            promise.resolve(request);
-        } catch (Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
-    }
-
     // anoncreds
 
     @ReactMethod
@@ -597,22 +585,6 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
         try {
             Wallet wallet = walletMap.get(walletHandle);
             String response = Anoncreds.issuerCreateCredentialOffer(wallet, credDefId).get();
-            promise.resolve(response);
-        } catch(Exception e) {
-            IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);
-            promise.reject(rejectResponse.getCode(), rejectResponse.toJson(), e);
-        }
-    }
-    
-    @ReactMethod
-    public void issuerCreateCredential(int walletHandle, String credOfferJson, String credReqJson, String credValuesJson, String revRegId, int blobStorageReaderHandle, Promise promise) {
-        try {
-            Wallet wallet = walletMap.get(walletHandle);
-            IssuerCreateCredentialResult createCredResult = Anoncreds.issuerCreateCredential(wallet, credOfferJson,credReqJson,credValuesJson,revRegId,blobStorageReaderHandle).get();
-            WritableArray response = new WritableNativeArray();
-            response.pushString(createCredResult.getCredentialJson());
-            response.pushString(createCredResult.getRevocId());
-            response.pushString(createCredResult.getRevocRegDeltaJson());
             promise.resolve(response);
         } catch(Exception e) {
             IndySdkRejectResponse rejectResponse = new IndySdkRejectResponse(e);

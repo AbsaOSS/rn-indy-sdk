@@ -626,13 +626,6 @@ const indy = {
     return JSON.parse(await IndySdk.buildGetTxnAuthorAgreementRequest(submitterDid, data))
   },
 
-  async buildGetAcceptanceMechanismsRequest(submitterDid: Did, timestamp: number, version: string): Promise<LedgerRequest> {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
-    return JSON.parse(await IndySdk.buildGetAcceptanceMechanismsRequest(submitterDid, typeof timestamp == 'undefined' ? -1 : timestamp, typeof version == 'undefined' ? null : version))
-  },
-
   // non_secrets
 
   async addWalletRecord(wh: WalletHandle, type: string, id: string, value: string, tags: {}): Promise<void> {
@@ -701,15 +694,6 @@ const indy = {
     }
 
     return JSON.parse(await IndySdk.issuerCreateCredentialOffer(wh, credDefId));
-  },
-
-  async issuerCreateCredential(wh: WalletHandle, credOffer: CredOffer, credReq: CredReq, credValues: CredValues, revRegId: string, blobReaderHandle: number): Promise<[Cred, CredRevocId, RevocRegDelta]> {
-    if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
-    }
-
-    const [cred, credRevocId, revocRegDelta] = await IndySdk.issuerCreateCredential(wh, JSON.stringify(credOffer), JSON.stringify(credReq), revRegId, JSON.stringify(credValues), blobReaderHandle);
-    return [JSON.parse(cred), credRevocId, JSON.parse(revocRegDelta)];
   },
 
   // blob_storage
