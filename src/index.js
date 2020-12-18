@@ -224,12 +224,12 @@ export type CredReqMetadata = {}
  */
 export type RevRegDef = {}
 
-export type RevRegId = string;
-export type CredRevocId = string;
-export type RevocRegDelta = Record<string, unknown>;
+export type RevRegId = string
+export type CredRevocId = string
+export type RevocRegDelta = Record<string, unknown>
 export type TailsWriterConfig = {
-  base_dir: string;
-  uri_pattern: string
+  base_dir: string,
+  uri_pattern: string,
 }
 
 export type Did = string
@@ -430,9 +430,9 @@ const indy = {
 
   async signRequest(wh: WalletHandle, submitterDid: Did, request: LedgerRequest): Promise<LedgerRequest> {
     if (Platform.OS === 'ios') {
-      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`);
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
-    return JSON.parse(await IndySdk.signRequest(wh, submitterDid, JSON.stringify(request)));
+    return JSON.parse(await IndySdk.signRequest(wh, submitterDid, JSON.stringify(request)))
   },
 
   async buildSchemaRequest(submitterDid: Did, data: string): Promise<LedgerRequest> {
@@ -440,7 +440,7 @@ const indy = {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
 
-    return JSON.parse(await IndySdk.buildSchemaRequest(submitterDid, JSON.stringify(data)));
+    return JSON.parse(await IndySdk.buildSchemaRequest(submitterDid, JSON.stringify(data)))
   },
 
   async buildGetSchemaRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
@@ -612,11 +612,27 @@ const indy = {
     )
   },
 
-  async appendTxnAuthorAgreementAcceptanceToRequest(request: LedgerRequest, text: string, version: string, taaDigest: string, mechanism: string, time: number): Promise<LedgerRequest> {
+  async appendTxnAuthorAgreementAcceptanceToRequest(
+    request: LedgerRequest,
+    text: string,
+    version: string,
+    taaDigest: string,
+    mechanism: string,
+    time: number
+  ): Promise<LedgerRequest> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
-    return JSON.parse(await IndySdk.appendTxnAuthorAgreementAcceptanceToRequest(JSON.stringify(request), text, version, taaDigest, mechanism, time))
+    return JSON.parse(
+      await IndySdk.appendTxnAuthorAgreementAcceptanceToRequest(
+        JSON.stringify(request),
+        text,
+        version,
+        taaDigest,
+        mechanism,
+        time
+      )
+    )
   },
 
   async buildGetTxnAuthorAgreementRequest(submitterDid: Did, data: string): Promise<LedgerRequest> {
@@ -675,17 +691,31 @@ const indy = {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
 
-    const [schemaId, schema] = await IndySdk.issuerCreateSchema(did, name, version, JSON.stringify(attributes));
-    return [schemaId, JSON.parse(schema)];
+    const [schemaId, schema] = await IndySdk.issuerCreateSchema(did, name, version, JSON.stringify(attributes))
+    return [schemaId, JSON.parse(schema)]
   },
 
-  async issuerCreateAndStoreCredentialDef(wh: WalletHandle, issuerDid: Did, schema: Schema, tag: string, signatureType: string, config: {}): Promise<[CredDef, CredDefId]> {
+  async issuerCreateAndStoreCredentialDef(
+    wh: WalletHandle,
+    issuerDid: Did,
+    schema: Schema,
+    tag: string,
+    signatureType: string,
+    config: {}
+  ): Promise<[CredDef, CredDefId]> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
 
-    const [credDefId, credDef] = await IndySdk.issuerCreateAndStoreCredentialDef(wh, issuerDid, JSON.stringify(schema), tag, signatureType, JSON.stringify(config));
-    return [credDefId, JSON.parse(credDef)];
+    const [credDefId, credDef] = await IndySdk.issuerCreateAndStoreCredentialDef(
+      wh,
+      issuerDid,
+      JSON.stringify(schema),
+      tag,
+      signatureType,
+      JSON.stringify(config)
+    )
+    return [credDefId, JSON.parse(credDef)]
   },
 
   async issuerCreateCredentialOffer(wh: WalletHandle, credDefId: CredDefId): Promise<CredOffer> {
@@ -693,7 +723,7 @@ const indy = {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
 
-    return JSON.parse(await IndySdk.issuerCreateCredentialOffer(wh, credDefId));
+    return JSON.parse(await IndySdk.issuerCreateCredentialOffer(wh, credDefId))
   },
 
   // blob_storage
@@ -703,7 +733,7 @@ const indy = {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
 
-    return JSON.parse(await IndySdk.openBlobStorageReader(type, JSON.stringify(tailsWriterConfig)));
+    return JSON.parse(await IndySdk.openBlobStorageReader(type, JSON.stringify(tailsWriterConfig)))
   },
 }
 
