@@ -313,6 +313,10 @@ const indy = {
     return IndySdk.listMyDidsWithMeta(wh)
   },
     
+  async setDidMetadata(wh, did, metadata) {
+    return IndySdk.setDidMetadata(wh, did, metadata)
+  },
+    
   // pairwise
 
   createPairwise(wh: WalletHandle, theirDid: Did, myDid: Did, metadata: string = ''): Promise<void> {
