@@ -310,12 +310,15 @@ const indy = {
   },
 
   async listMyDidsWithMeta(wh) {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
     return IndySdk.listMyDidsWithMeta(wh)
   },
     
   async setDidMetadata(wh, did, metadata) {
     if (Platform.OS === 'ios') {
-      return IndySdk.setMetadata(metadata, did, wh)
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
     return IndySdk.setDidMetadata(wh, did, metadata)
   },
