@@ -315,7 +315,7 @@ const indy = {
     
   async setDidMetadata(wh, did, metadata) {
     if (Platform.OS === 'ios') {
-      return IndySdk.setDidMetadata(metadata, did, wh)
+      return IndySdk.setMetadata(metadata, did, wh)
     }
     return IndySdk.setDidMetadata(wh, did, metadata)
   },
