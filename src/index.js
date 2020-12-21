@@ -726,6 +726,28 @@ const indy = {
     return JSON.parse(await IndySdk.issuerCreateCredentialOffer(wh, credDefId))
   },
 
+  async issuerCreateCredential(
+    wh: WalletHandle,
+    credOffer: CredOffer,
+    credReq: CredReq,
+    credvalues: CredValues,
+    revRegId: RevRegId,
+    blobStorageReaderHandle: BlobReaderHandle
+  ): Promise<[Credential, CredRevocId, RevocRegDelta]> {
+    if (Platform.OS === 'ios') {
+      throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
+    }
+    const [credJson, revocId, revocRegDelta] = await IndySdk.issuerCreateCredential(
+      wh,
+      JSON.stringify(credOffer),
+      JSON.stringify(credReq),
+      JSON.stringify(credvalues),
+      revRegId,
+      blobStorageReaderHandle
+    )
+    return [JSON.parse(credJson), revocId, JSON.parse(revocRegDelta)]
+  },
+
   // blob_storage
 
   async openBlobStorageReader(type: string, tailsWriterConfig: TailsWriterConfig): Promise<BlobReaderHandle> {
