@@ -476,7 +476,7 @@ const indy = {
     return [id, JSON.parse(schema)]
   },
 
-  async buildCredDefRequest(submitterDid: Did, credDef: CredDef): Promise<LedgerRequestResult> {
+  async buildCredDefRequest(submitterDid: Did, credDef: CredDef): Promise<LedgerRequest> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
@@ -686,7 +686,7 @@ const indy = {
 
   // Anoncreds
 
-  async issuerCreateSchema(did: Did, name: string, version: string, attributes: string[]): Promise<[Schema, SchemaId]> {
+  async issuerCreateSchema(did: Did, name: string, version: string, attributes: string[]): Promise<[SchemaId, Schema]> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
@@ -702,7 +702,7 @@ const indy = {
     tag: string,
     signatureType: string,
     config: {}
-  ): Promise<[CredDef, CredDefId]> {
+  ): Promise<[CredDefId, CredDef]> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
