@@ -483,7 +483,7 @@ const indy = {
     return JSON.parse(await IndySdk.buildCredDefRequest(submitterDid, JSON.stringify(credDef)))
   },
 
-  async buildGetCredDefRequest(submitterDid: Did, id: string): Promise<LedgerRequestResult> {
+  async buildGetCredDefRequest(submitterDid: Did, id: string): Promise<LedgerRequest> {
     return JSON.parse(await IndySdk.buildGetCredDefRequest(submitterDid, id))
   },
 
