@@ -132,7 +132,7 @@ pod install --project-directory=ios/
 
 2. Create `Frameworks` folder in your project's `ios/Pods` directory and copy `Indy.framework` into that directory.
 
-3. [Optional, Recommended] Most projects have `ios/Pods` ignored in their `.gitignore`. This is good practice, however this means the framework would need to be added after every clone. To prevent this you can "unignore" the Frameworks directory:
+3. [Optional] Most projects have `ios/Pods` ignored in their `.gitignore`. This is good practice, however this means the framework would need to be added after every clone. To prevent this you can "unignore" the Frameworks directory:
 
 ```.gitignore
 ios/Pods/
