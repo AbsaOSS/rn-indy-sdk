@@ -67,10 +67,15 @@ public class IndySdkModule extends ReactContextBaseJavaModule {
     private static Map<Integer, Pool> poolMap = new ConcurrentHashMap<>();
     private static Map<String, Integer> poolNameToHandleMap = new ConcurrentHashMap<>();
     private static Map<Integer, WalletSearch> searchMap = new ConcurrentHashMap<>();
+    private Map<Integer, CredentialsSearchForProofReq> credentialSearchMap;
+    // Java wrapper does not expose credentialSearchHandle
+    private int credentialSearchIterator = 0;
+
 
     public IndySdkModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        this.credentialSearchMap = new ConcurrentHashMap<>();
     }
 
     @Override
