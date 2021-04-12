@@ -667,7 +667,7 @@ const indy = {
       JSON.stringify(revocRegDefs),
       JSON.stringify(revocRegs),
     )
-  }
+  },
 
 
   async appendTxnAuthorAgreementAcceptanceToRequest(
