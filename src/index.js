@@ -655,7 +655,7 @@ const indy = {
     credentialDefs: CredentialDefs,
     revRegsDefs: Indy.RevRegsDefs,
     revRegs: RevStates
-  ): Promise<boolean>{
+  ): Promise<boolean> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
@@ -665,10 +665,9 @@ const indy = {
       JSON.stringify(schemas),
       JSON.stringify(credDefs),
       JSON.stringify(revocRegDefs),
-      JSON.stringify(revocRegs),
+      JSON.stringify(revocRegs)
     )
   },
-
 
   async appendTxnAuthorAgreementAcceptanceToRequest(
     request: LedgerRequest,
