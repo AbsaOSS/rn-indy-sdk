@@ -660,12 +660,12 @@ const indy = {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
     return IndySdk.verifierVerifyProof(
-      JSON.stringify(proofReq),
+      JSON.stringify(proofRequest),
       JSON.stringify(proof),
       JSON.stringify(schemas),
-      JSON.stringify(credDefs),
-      JSON.stringify(revocRegDefs),
-      JSON.stringify(revocRegs)
+      JSON.stringify(credentialDefs),
+      JSON.stringify(revRegsDefs),
+      JSON.stringify(revRegs)
     )
   },
 
