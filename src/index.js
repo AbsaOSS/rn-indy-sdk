@@ -650,22 +650,23 @@ const indy = {
 
   async verifierVerifyProof(
     proofRequest: IndyProofRequest,
-    proof: Indy.IndyProof,
+    proof: Proof,
     schemas: Schemas,
     credentialDefs: CredentialDefs,
-    revRegsDefs: Indy.RevRegsDefs,
-    revRegs: RevStates
+    revRegDef: ?RevRegDef,
+    revStates: RevStates
   ): Promise<boolean> {
     if (Platform.OS === 'ios') {
       throw new Error(`Unsupported operation! Platform: ${Platform.OS}`)
     }
+
     return IndySdk.verifierVerifyProof(
       JSON.stringify(proofRequest),
       JSON.stringify(proof),
       JSON.stringify(schemas),
       JSON.stringify(credentialDefs),
-      JSON.stringify(revRegsDefs),
-      JSON.stringify(revRegs)
+      revRegDef && JSON.stringify(revRegDef),
+      JSON.stringify(revStates)
     )
   },
 
