@@ -480,9 +480,6 @@ const indy = {
   },
 
   async parseGetSchemaResponse(getSchemaResponse: LedgerRequestResult): Promise<[SchemaId, Schema]> {
-    if (Platform.OS === 'ios') {
-      return IndySdk.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
-    }
     const [id, schema] = await IndySdk.parseGetSchemaResponse(JSON.stringify(getSchemaResponse))
     return [id, JSON.parse(schema)]
   },

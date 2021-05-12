@@ -413,7 +413,7 @@ class IndySdk : NSObject {
     @objc func proverCreateProofForRequest(_ proofReqJSON: String, requestedCredentialsJSON: String, masterSecretID: String, schemasJSON: String, credentialDefsJSON: String, revocStatesJSON: String, walletHandle: NSNumber,
                                                resolver resolve: @escaping RCTPromiseResolveBlock,
                                                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-      let whNumber:Int32  = Int32(truncating:walletHandle)
+      let whNumber:Int32 = Int32(truncating:walletHandle)
       IndyAnoncreds.proverCreateProof(
         forRequest: proofReqJSON,
         requestedCredentialsJSON: requestedCredentialsJSON,
