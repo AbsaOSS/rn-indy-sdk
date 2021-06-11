@@ -598,7 +598,7 @@ const indy = {
     return await IndySdk.proverSearchCredentialsForProofReq(
       wh,
       JSON.stringify(proofRequest),
-      JSON.stringify(extraQuery ? extraQuery : {})
+      JSON.stringify(extraQuery ?? {})
     )
   },
 
