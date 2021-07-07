@@ -4,6 +4,7 @@
   "version": "0.1.11",
   "description": "React Native Indy SDK Wrapper",
   "main": "lib/index.js",
+  "types": "./src/index.d.ts",
   "scripts": {
     "check-format": "prettier --check 'src/**/*.js'",
     "format": "prettier --write 'src/**/*.js'",
@@ -37,6 +38,7 @@
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.4",
     "@babel/preset-flow": "^7.8.3",
+    "@types/node": "^14.14.7",
     "flow-bin": "^0.117.0",
     "husky": "^4.2.3",
     "prettier": "^2.0.3",
